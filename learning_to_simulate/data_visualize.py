@@ -1,19 +1,17 @@
 import tensorflow as tf
 import numpy as np
+import functools
+from learning_to_simulate import reading_utils
 
 print(tf.__version__)
 
 tf.compat.v1.enable_eager_execution()
 
-datapath = '/private/tmp/datasets/MultiMaterial/valid.tfrecord'
+datapath = '/private/tmp/datasets/WaterRamps/valid.tfrecord'
 
 raw_dataset = tf.data.TFRecordDataset(datapath)
+ds = raw_dataset
 
-for example in tf.python_io.tf_record_iterator(datapath):
-    print(tf.train.Example.FromString(example))
-
-for raw_record in raw_dataset.take(1):
-    example = tf.train.Example()
-    example.ParseFromString(raw_record.numpy())
-    print(example)
+ds = ds.map(functools.partial(
+    reading_utils.parse_serialized_simulation_example, metadata=metadata))
 
