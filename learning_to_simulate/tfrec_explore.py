@@ -83,3 +83,4 @@ split_with_window = functools.partial(
 ds = ds.flat_map(split_with_window)
 # Splits a chunk into input steps and target steps
 ds = ds.map(prepare_inputs)
+print(ds)
