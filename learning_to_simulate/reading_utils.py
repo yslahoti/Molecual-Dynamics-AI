@@ -23,6 +23,8 @@ import os
 import numpy as np
 import tensorflow.compat.v1 as tf
 
+tf.enable_eager_execution()
+
 # Create a description of the features.
 
 _FEATURE_DESCRIPTION = {
@@ -161,6 +163,9 @@ ds = ds.map(functools.partial(
 print(ds)
 print(type(ds))
 
-
-
+for example in ds:
+  print(example)
+  image = example["particle_type"]
+  label = example["position"]
+  print(image.shape, label.shape)
 
