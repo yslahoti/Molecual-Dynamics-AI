@@ -1,6 +1,11 @@
 after loading ds from path as DatasetV1Adapter
 
+# 1000 trials w 600 frames/trial
+
 tuple of (particle_type, position)
     within particle_type:
 
     within position:
+        dict (position(time,particle,x_y) ,
+
+

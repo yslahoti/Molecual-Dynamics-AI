@@ -23,9 +23,8 @@ import os
 import numpy as np
 import tensorflow.compat.v1 as tf
 
-tf.enable_eager_execution()
-
 # Create a description of the features.
+tf.enable_eager_execution()
 
 _FEATURE_DESCRIPTION = {
     'position': tf.io.VarLenFeature(tf.string),
@@ -160,13 +159,15 @@ data_path2 = '/private/tmp/datasets/WaterRamps/train.tfrecord'
 ds = tf.data.TFRecordDataset(data_path2)
 ds = ds.map(functools.partial(
     parse_serialized_simulation_example, metadata=metadata))
-print(ds)
-print(type(ds))
+#print(ds)
+#print(type(ds))
 
 
 for example in ds:
-  print(example)
-  image = example["particle_type"]
-  label = example["position"]
-  print(image.shape, label.shape)
+    exam = example[0]
+    print(len(exam))
+    print("type 0: ", type(exam))
+    for key,value in exam.items():
+        print("KEY:", key, "VALUE:",value,"\n")
+
 
