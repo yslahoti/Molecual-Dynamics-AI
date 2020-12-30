@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import reading_utils
 
-H = np.array([[1, 2, 3, 4],
-              [5, 6, 7, 8],
-              [9, 10, 11, 12],
-              [13, 14, 15, 16]])
+H = reading_utils._get_data();
+print(H)
 
 plt.imshow(H)
 plt.show()
+
