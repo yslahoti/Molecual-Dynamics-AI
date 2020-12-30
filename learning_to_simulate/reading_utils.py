@@ -178,3 +178,23 @@ for example in ds.take(1):
         z = np.array(value)
         print(type(z))
         print(z[602][:][:])
+
+
+def _get_data():
+    data_path = '/private/tmp/datasets/WaterRamps/'
+    metadata = _read_metadata(data_path)
+    print(metadata)
+
+    data_path2 = '/private/tmp/datasets/WaterRamps/train.tfrecord'
+    ds = tf.data.TFRecordDataset(data_path2)
+    ds = ds.map(functools.partial(
+        parse_serialized_simulation_example, metadata=metadata))
+
+    for example in ds.take(1):
+        exam = example[1]
+        for key, value in exam.items():
+            print("KEY:", key, "VALUE:", value, "\n")
+            z = np.array(value)
+            samp = z[1][:][:]
+    return samp
+
