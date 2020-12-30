@@ -164,9 +164,10 @@ print(ds)
 print(type(ds))
 
 
-for example in ds:
-  print(example)
-  image = example["particle_type"]
-  label = example["position"]
-  print(image.shape, label.shape)
-
+for example in ds.take(1):
+    exam = example[1]
+    for key, value in exam.items():
+        print("KEY:", key, "VALUE:", value, "\n")
+        z = np.array(value)
+        print(type(z))
+        print(z[602][:][:])
