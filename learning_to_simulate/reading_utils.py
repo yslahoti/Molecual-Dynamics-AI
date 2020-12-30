@@ -156,4 +156,11 @@ print(metadata)
 
 data_path2 = '/private/tmp/datasets/WaterRamps/train.tfrecord'
 ds = tf.data.TFRecordDataset(data_path2)
+ds = ds.map(functools.partial(
+    parse_serialized_simulation_example, metadata=metadata))
 print(ds)
+print(type(ds))
+
+
+
+
