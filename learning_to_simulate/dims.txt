@@ -6,4 +6,6 @@ tuple of (particle_type, position)
     within particle_type:
 
     within position:
-    dict (position(time,particle,x_y) ,
+        dict (position(time,particle,x_y) ,
+
+

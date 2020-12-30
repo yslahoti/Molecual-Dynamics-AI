@@ -51,6 +51,7 @@ TYPE_TO_COLOR = {
 }
 
 
+
 def main(unused_argv):
 
   if not FLAGS.rollout_path:
