@@ -171,3 +171,10 @@ for example in ds:
         print("KEY:", key, "VALUE:",value,"\n")
 
 
+for example in ds.take(1):
+    exam = example[1]
+    for key, value in exam.items():
+        print("KEY:", key, "VALUE:", value, "\n")
+        z = np.array(value)
+        print(type(z))
+        print(z[602][:][:])
