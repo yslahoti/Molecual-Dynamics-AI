@@ -17,10 +17,15 @@
 """Utilities for reading open sourced Learning Complex Physics data."""
 
 import functools
+import json
+import os
+
 import numpy as np
 import tensorflow.compat.v1 as tf
 
 # Create a description of the features.
+from learning_to_simulate.train import _read_metadata
+
 _FEATURE_DESCRIPTION = {
     'position': tf.io.VarLenFeature(tf.string),
 }
@@ -138,3 +143,10 @@ def split_trajectory(context, features, window_length=7):
   model_input_features['position'] = tf.stack(pos_stack)
 
   return tf.data.Dataset.from_tensor_slices(model_input_features)
+
+#Code Ishaan input to read metadata
+def _read_metadata(data_path):
+    with open(os.path.join(data_path, 'metadata.json'), 'rt') as fp:
+        return json.loads(fp.read())
+data_path = '/private/tmp/datasets/WaterRamps/metadata.json'
+metadata = _read_metadata(data_path)

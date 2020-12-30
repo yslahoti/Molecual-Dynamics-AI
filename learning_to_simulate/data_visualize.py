@@ -2,9 +2,12 @@ import json
 import os
 
 import tensorflow as tf
+import tensorflow_datasets as tfds
 import numpy as np
 import functools
+
 from learning_to_simulate import reading_utils
+
 
 print(tf.__version__)
 
@@ -16,7 +19,7 @@ def _read_metadata(data_path):
 tf.compat.v1.enable_eager_execution()
 
 datapath = '/private/tmp/datasets/WaterRamps/valid.tfrecord'
-datapath2 = '/private/tmp/datasets/WaterRamps/metadata.json'
+datapath2 = '/private/tmp/datasets/WaterRamps/'
 
 
 ds = tf.data.TFRecordDataset(datapath)
