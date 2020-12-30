@@ -1,0 +1,6 @@
+after loading ds from path as DatasetV1Adapter
+
+tuple of (particle_type, position)
+    within particle_type:
+
+    within position:
