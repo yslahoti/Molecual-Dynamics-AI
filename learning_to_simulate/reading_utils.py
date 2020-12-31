@@ -196,6 +196,7 @@ def _get_data(sim, frame):
     count = 1
     for example in ds.take(sim):
         print(count)
+# checks simulation number and updates counter
         if count < sim:
             count += 1
             continue
