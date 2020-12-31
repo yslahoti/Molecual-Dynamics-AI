@@ -162,39 +162,49 @@ ds = ds.map(functools.partial(
 #print(ds)
 #print(type(ds))
 
+# # used in particle positions
+# for example in ds.take(1):
+#     exam = example[0]
+#     print(len(exam))
+#     print("type 0: ", type(exam))
+#     for key,value in exam.items():
+#         print("KEY:", key, "VALUE:",value,"\n")
 
-for example in ds.take(1):
-    exam = example[0]
-    print(len(exam))
-    print("type 0: ", type(exam))
-    for key,value in exam.items():
-        print("KEY:", key, "VALUE:",value,"\n")
+# # used to get particle positions
+# for example in ds.take(1):
+#     exam = example[1]
+#     for key, value in exam.items():
+#         print("KEY:", key, "VALUE:", value, "\n")
+#         z = np.array(value)
+#         print(type(z))
+#         print(z[1][:][:])
+#
+# # used to get particle types
+# for example in ds.take(1):
+#     exam = example[0]
+#     print(np.array(exam.get("particle_type")))
 
-
-for example in ds.take(1):
-    exam = example[1]
-    for key, value in exam.items():
-        print("KEY:", key, "VALUE:", value, "\n")
-        z = np.array(value)
-        print(type(z))
-        print(z[1][:][:])
-
-
-def _get_data():
+def _get_data(sim, frame):
     data_path = '/private/tmp/datasets/WaterRamps/'
     metadata = _read_metadata(data_path)
-    print(metadata)
+#    print(metadata)
 
     data_path2 = '/private/tmp/datasets/WaterRamps/train.tfrecord'
     ds = tf.data.TFRecordDataset(data_path2)
     ds = ds.map(functools.partial(
         parse_serialized_simulation_example, metadata=metadata))
-
-    for example in ds.take(1):
-        exam = example[1]
-        for key, value in exam.items():
-            print("KEY:", key, "VALUE:", value, "\n")
+    count = 1
+    for example in ds.take(sim):
+        print(count)
+        if count < sim:
+            count += 1
+            continue
+#        print(type(example))
+        pos = example[1]
+        col = np.array(example[0].get("particle_type"))
+        for key, value in pos.items():
+#            print("KEY:", key, "VALUE:", value, "\n")
             z = np.array(value)
-            samp = z[1][:][:]
-    return samp
+            samp = z[frame][:][:]
+    return samp, col
 
