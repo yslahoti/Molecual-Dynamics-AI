@@ -15,7 +15,9 @@ pos, col = reading_utils._get_data(sim,frame);
 x, y = np.split(pos,[-1],axis=1)
 color = col
 plt.scatter(x, y, s=5, c=color, alpha=0.5)
-plt.xlim(0, 1)
-plt.ylim(0, 1)
+plt.xlim(.1, .9)
+plt.ylim(.1, .9)
 plt.show()
+
+
 

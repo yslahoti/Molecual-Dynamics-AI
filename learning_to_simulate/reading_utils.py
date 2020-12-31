@@ -159,6 +159,18 @@ data_path2 = '/private/tmp/datasets/WaterRamps/train.tfrecord'
 ds = tf.data.TFRecordDataset(data_path2)
 ds = ds.map(functools.partial(
     parse_serialized_simulation_example, metadata=metadata))
+
+split_with_window = functools.partial(split_trajectory,
+          window_length= 5 + 1)
+ds = ds.flat_map(split_with_window)
+print(ds)
+for example in ds.take(1):
+     exam = example[1]
+         for key, value in exam.items():
+             print("KEY:", key, "VALUE:", value, "\n")
+             z = np.array(value)
+             print(z.shape)
+
 #print(ds)
 #print(type(ds))
 
