@@ -144,34 +144,34 @@ def split_trajectory(context, features, window_length=7):
 
     return tf.data.Dataset.from_tensor_slices(model_input_features)
 
-
 # Code Ishaan input to read metadata
 def _read_metadata(data_path):
     with open(os.path.join(data_path, 'metadata.json'), 'rt') as fp:
         return json.loads(fp.read())
 
 
-data_path = '/private/tmp/datasets/WaterRamps/'
-metadata = _read_metadata(data_path)
-print(metadata)
+# data_path = '/private/tmp/datasets/WaterRamps/'
+# metadata = _read_metadata(data_path)
+# print(metadata)
+#
+# data_path2 = '/private/tmp/datasets/WaterRamps/train.tfrecord'
+# ds = tf.data.TFRecordDataset(data_path2)
+# ds = ds.map(functools.partial(
+#     parse_serialized_simulation_example, metadata=metadata))
+#
+# split_with_window = functools.partial(split_trajectory,
+#                                       window_length=7)
+# ds = ds.flat_map(split_with_window)
+# # print(ds)
+# for example in ds.take(1):
+#     for key, value in example.items():
+#         print("KEY:", key, "VALUE:", value, "\n")
+#         z = np.array(value)
+#         print(z.shape)
 
-data_path2 = '/private/tmp/datasets/WaterRamps/train.tfrecord'
-ds = tf.data.TFRecordDataset(data_path2)
-ds = ds.map(functools.partial(
-    parse_serialized_simulation_example, metadata=metadata))
 
-split_with_window = functools.partial(split_trajectory,
-          window_length= 7)
-ds = ds.flat_map(split_with_window)
-print(ds)
-for example in ds.take(1):
-    for key, value in example.items():
-        print("KEY:", key, "VALUE:", value, "\n")
-        z = np.array(value)
-        print(z.shape)
-
-#print(ds)
-#print(type(ds))
+# print(ds)
+# print(type(ds))
 
 # # used in particle positions
 # for example in ds.take(1):
@@ -195,28 +195,25 @@ for example in ds.take(1):
 #     exam = example[0]
 #     print(np.array(exam.get("particle_type")))
 
-def _get_data(sim, frame):
-    data_path = '/private/tmp/datasets/WaterRamps/'
+def _get_data(sim, frame, name):
+    data_path = '/private/tmp/datasets/' + name + '/'
     metadata = _read_metadata(data_path)
-#    print(metadata)
+    #    print(metadata)
 
-    data_path2 = '/private/tmp/datasets/WaterRamps/train.tfrecord'
+    data_path2 = '/private/tmp/datasets/' + name + '/train.tfrecord'
     ds = tf.data.TFRecordDataset(data_path2)
     ds = ds.map(functools.partial(
         parse_serialized_simulation_example, metadata=metadata))
     count = 1
     for example in ds.take(sim):
         print(count)
-# checks simulation number and updates counter
+        # checks simulation number and updates counter
         if count < sim:
             count += 1
             continue
-#        print(type(example))
         pos = example[1]
         col = np.array(example[0].get("particle_type"))
         for key, value in pos.items():
-#            print("KEY:", key, "VALUE:", value, "\n")
             z = np.array(value)
             samp = z[frame][:][:]
     return samp, col
-

@@ -9,3 +9,6 @@ tuple of (particle_type, position)
         dict (position(time,particle,x_y) ,
 
 
+595000 1D matrix
+within each
+7 x particles x 2 matrix
