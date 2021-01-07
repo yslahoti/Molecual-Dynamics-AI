@@ -2,6 +2,9 @@ import MDAnalysis as mda
 from MDAnalysis.lib.formats.libdcd import DCDFile
 import tensorflow.compat.v1 as tf
 
+tf.enable_eager_execution()
+
+
 def getDataPlot(i):
     u = mda.Universe('../Datasets/solvate.pdb',
                      '../Datasets/wat' + str(i) + '/wat' + str(i) +'_out.dcd')
@@ -28,7 +31,7 @@ def make_dict_tensor(t,p,num):
 
     type_dict = {
       "particle_type": t_tensor,
-      "key": tf.convert_to_tensor(num),
+#      "key": tf.convert_to_tensor(num),
     }
     pos_dict = {
       "position": p_tensor
@@ -37,10 +40,18 @@ def make_dict_tensor(t,p,num):
 
 # making TF dataset
 num_trajectory = 1
-all_dat = [];
+tt = []
 for i in range(1,num_trajectory+1):
     t,p = getDataFrames(i)
-    type_dict, pos_dict = make_dict_tensor(t,p,i))
+    x,y = make_dict_tensor(t,p,i)
+    dsx = tf.data.Dataset.from_tensor_slices(x)
+    dsy = tf.data.Dataset.from_tensor_slices(y)
+    dst = tf.tuple(dsx,dsy)
+    print(dst)
+
+
+
+
 
 # for example in all_dat:
 #     print(type(example))
