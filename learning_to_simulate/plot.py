@@ -7,9 +7,10 @@ from mpl_toolkits import mplot3d
 # DEFINES DIMENSIONS OF GRAPH AND GRAPH TYPE
 pltType = 3
 name = "Sand-3D"
+
 # INPUT VALUE BETWEEN 0 - 600 *unsure of bounds
 # DEFINES TIME POINT
-frame = 0
+frame = 100
 
 # INPUT VALUE BETWEEN 1 - 1000 *unsure of bounds
 # DEFINES SIMULATION NUMBER
