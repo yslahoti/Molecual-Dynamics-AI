@@ -30,12 +30,11 @@ def make_dict_tensor(t,p,num):
     }
     return ((type_dict, pos_dict))
 
-
 # making TF dataset
 num_trajectory = 3
 all_dat = [];
-for i in range(0,num_trajectory - 1)):
-#    t,p = function to get all the t and p for a trajectory
+for i in range(0,num_trajectory - 1):
+    t,p = md.getDataFrames(i)
     all_dat.append(make_dict_tensor(t,p,i))
 ds = tf.data.Dataset.from_tensor_slices(all_dat)
 
