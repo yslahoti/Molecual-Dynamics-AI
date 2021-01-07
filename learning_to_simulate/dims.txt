@@ -18,7 +18,7 @@ ds = <class 'tensorflow.python.data.ops.dataset_ops.DatasetV1Adapter'>
 example in ds = <class 'tuple'>
 example[0] = dict
     key, val -->
-    <class 'str'> ; particle type
+    <class 'str'> ; particle_type
     <class 'tensorflow.python.framework.ops.EagerTensor'>
 
     <class 'str'> ; key
