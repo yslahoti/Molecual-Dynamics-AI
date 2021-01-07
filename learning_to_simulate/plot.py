@@ -40,7 +40,7 @@ elif pltType == 3:
     plt.ylim(.1, .9)
     plt.show()
 else:
-    col, pos = md.getData()
+    col, pos = md.getDataPlot(2)
     x, y, z = np.hsplit(pos,3)
     ax = plt.axes(projection ="3d")
     col[col == "O"] = "blue"
