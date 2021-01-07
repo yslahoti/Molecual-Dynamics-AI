@@ -33,18 +33,25 @@ def make_dict_tensor(t,p,num):
     pos_dict = {
       "position": p_tensor
     }
-    return ((type_dict, pos_dict))
+    return type_dict, pos_dict
 
 # making TF dataset
-num_trajectory = 3
+num_trajectory = 1
 all_dat = [];
 for i in range(1,num_trajectory+1):
     t,p = getDataFrames(i)
-    all_dat.append(make_dict_tensor(t,p,i))
-print(all_dat)
-ds = tf.data.Dataset.from_tensor_slices(all_dat)
+    type_dict, pos_dict = make_dict_tensor(t,p,i))
 
-
+# for example in all_dat:
+#     print(type(example))
+#     print(len(example))
+#     for key, value in example[1].items():
+#         print(key)
+#         print(value)
+#
+# #ds = tf.data.Dataset.from_tensor_slices(all_dat)
+#
+# tf.data.Dataset.from.
 
 
 
