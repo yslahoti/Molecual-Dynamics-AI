@@ -6,3 +6,7 @@ def getData():
     p = u.atoms.positions
     t = u.atoms.types
     return t, p
+
+def getData_train():
+    t,p = getData()
+    return t, p
