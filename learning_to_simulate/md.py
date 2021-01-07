@@ -19,7 +19,6 @@ def getDataFrames(i):
     with DCDFile('../Datasets/wat' + str(i) + '/wat' + str(i) +'_out.dcd') as f:
         for frame in f:
             l.append(frame.xyz)
-    print(l)
     return l
 getDataFrames(1)
 
