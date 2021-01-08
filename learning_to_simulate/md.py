@@ -7,13 +7,18 @@ import train
 
 tf.enable_eager_execution()
 
+def normalize(l, nmin, nmax, omin, omax):
+    OldRange = (omax - omin)
+    NewRange = (nmax - nmin)
+    l = (((l - omin) * NewRange) / OldRange) + nmin
+    return l
 
 def getDataPlot(i):
     u = mda.Universe('../Datasets/solvate.pdb',
                      '../Datasets/wat' + str(i) + '/wat' + str(i) +'_out.dcd')
     p = u.atoms.positions
 #Not sure if this is right normalization factor
-    p = p/30.0
+    p = normalize(p, .2, .8, 0, 30)
     t = u.atoms.types
     return t, p
 
@@ -28,7 +33,9 @@ def getDataFrames(i):
     l = []
     with DCDFile('../Datasets/wat' + str(i) + '/wat' + str(i) +'_out.dcd') as f:
         for frame in f:
-            l.append(frame.xyz.tolist())
+            ff = frame.xyz
+            ff = normalize(ff, .2, .8, 0, 30)
+            l.append(ff)
     return t,l
 
 def make_dict_tensor(t,p):
@@ -65,6 +72,8 @@ def getDs():
 ds = getDs()
 print("pp")
 print(type(ds))
+
+
 
 
 
