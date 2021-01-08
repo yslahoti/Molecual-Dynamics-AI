@@ -46,28 +46,25 @@ def make_dict_tensor(t,p):
 
 # making TF dataset
 
-def getDs(t,f,input_trajectory_length):
+def getDs():
     model_input_features = {}
-    # Prepare the context features per step.
-    if 'particle_type' in f:
-        global_stack = []
-        for idx in range(input_trajectory_length):
-            global_stack.append(t['particle_type'])
-        model_input_features['particle_type'] = tf.stack(global_stack)
-
     pos_stack = []
-    for idx in range(input_trajectory_length):
-        pos_stack.append(f['position'])
-    # Get the corresponding positions
+    global_stack = []
+    for i in range(1,3):
+        t, p = getDataFrames(i)
+        x, y = make_dict_tensor(t, p)
+        global_stack.append(x['particle_type'])
+        pos_stack.append(y['position'])
+
+    model_input_features['particle_type'] = tf.stack(global_stack)
     model_input_features['position'] = tf.stack(pos_stack)
 
     return tf.data.Dataset.from_tensor_slices(model_input_features)
 
-for i in range(1, 1):
-    print(i)
-    t, p = getDataFrames(i)
-    x, y = make_dict_tensor(t, p)
-    ds = getDs(x, y, 1)
+
+ds = getDs()
+print("pp")
+print(type(ds))
 
 
 
