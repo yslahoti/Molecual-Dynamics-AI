@@ -1,6 +1,7 @@
 import MDAnalysis as mda
 from MDAnalysis.lib.formats.libdcd import DCDFile
 import tensorflow.compat.v1 as tf
+import numpy as np
 
 tf.enable_eager_execution()
 
@@ -9,7 +10,7 @@ def getDataPlot(i):
     u = mda.Universe('../Datasets/solvate.pdb',
                      '../Datasets/wat' + str(i) + '/wat' + str(i) +'_out.dcd')
     p = u.atoms.positions
-#Not sure if this is right type
+#Not sure if this is right normalization factor
     p = p/30.0
     t = u.atoms.types
     return t, p
@@ -18,7 +19,10 @@ def getDataFrames(i):
     u = mda.Universe('../Datasets/solvate.pdb',
                      '../Datasets/wat' + str(i) + '/wat' + str(i) +'_out.dcd')
     t = u.atoms.types
-    c = 0
+    t[t == "O"] = 0
+    t[t == "H"] = 1
+    t = np.asarray(t).astype('int32')
+
     l = []
     with DCDFile('../Datasets/wat' + str(i) + '/wat' + str(i) +'_out.dcd') as f:
         for frame in f:
@@ -47,10 +51,10 @@ for i in range(1,num_trajectory+1):
     dsx = tf.data.Dataset.from_tensor_slices(x)
     dsy = tf.data.Dataset.from_tensor_slices(y)
     dst = tf.tuple(dsx,dsy)
-    print(dst)
-    print(type(dst))
+    ds = tf.data.Dataset.from_tensor_slices((dsx,dsy))
 
-
+x,y = getDataFrames(1)
+print(x)
 
 
 
