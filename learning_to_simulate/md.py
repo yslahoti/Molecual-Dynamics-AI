@@ -48,6 +48,8 @@ for i in range(1,num_trajectory+1):
     dsy = tf.data.Dataset.from_tensor_slices(y)
     dst = tf.tuple(dsx,dsy)
     print(dst)
+    print(type(dst))
+
 
 
 
