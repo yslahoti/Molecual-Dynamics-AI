@@ -46,50 +46,55 @@ def make_dict_tensor(t,p):
 
 # making TF dataset
 
-def getDs(num, str):
-
+def getDs(t,f,input_trajectory_length):
     model_input_features = {}
     # Prepare the context features per step.
-    model_input_features['particle_type'] = tf.tile(
-        tf.expand_dims(context['particle_type'], axis=0),
-        [input_trajectory_length, 1])
-
-    if 'step_context' in features:
+    if 'particle_type' in f:
         global_stack = []
         for idx in range(input_trajectory_length):
-            global_stack.append(features['step_context'][idx:idx + window_length])
-        model_input_features['step_context'] = tf.stack(global_stack)
+            global_stack.append(t['particle_type'])
+        model_input_features['particle_type'] = tf.stack(global_stack)
 
     pos_stack = []
     for idx in range(input_trajectory_length):
-        pos_stack.append(features['position'][idx:idx + window_length])
+        pos_stack.append(f['position'])
     # Get the corresponding positions
     model_input_features['position'] = tf.stack(pos_stack)
 
     return tf.data.Dataset.from_tensor_slices(model_input_features)
 
-    if (str == "one_step"):
-        t,p = getDataFrames(1)
-        x,y = make_dict_tensor(t,p)
-        s = reading_utils.split_trajectory(x,y)
-        print(1)
-        for i in range(2,num+1):
-            print(i)
-            t,p = getDataFrames(i)
-            x,y = make_dict_tensor(t,p)
-            temp = reading_utils.split_trajectory(x,y)
-            s = s.concatenate(temp)
-        s = s.map(train.prepare_inputs)
-        return s
-    elif (str == "rollout"):
-        t,p = getDataFrames(1)
-        x,y = make_dict_tensor(t,p)
-        print(1)
-        for i in range(2,num+1):
-            print(i)
-            t,p = getDataFrames(i)
-            x,y = make_dict_tensor(t,p)
-        return s
+for i in range(1, 1):
+    print(i)
+    t, p = getDataFrames(i)
+    x, y = make_dict_tensor(t, p)
+    ds = getDs(x, y, 1)
+
+
+
+
+
+    # if (str == "one_step"):
+    #     t,p = getDataFrames(1)
+    #     x,y = make_dict_tensor(t,p)
+    #     s = reading_utils.split_trajectory(x,y)
+    #     print(1)
+    #     for i in range(2,num+1):
+    #         print(i)
+    #         t,p = getDataFrames(i)
+    #         x,y = make_dict_tensor(t,p)
+    #         temp = reading_utils.split_trajectory(x,y)
+    #         s = s.concatenate(temp)
+    #     s = s.map(train.prepare_inputs)
+    #     return s
+    # elif (str == "rollout"):
+    #     t,p = getDataFrames(1)
+    #     x,y = make_dict_tensor(t,p)
+    #     print(1)
+    #     for i in range(2,num+1):
+    #         print(i)
+    #         t,p = getDataFrames(i)
+    #         x,y = make_dict_tensor(t,p)
+    #     return s
 
 # def getDs(num, str):
 #     if (str == "one_step"):
@@ -137,7 +142,6 @@ for k,v in x.items():
     print(v)
     print(c)
     c+=1
-
 
 
 
