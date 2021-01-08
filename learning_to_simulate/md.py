@@ -53,11 +53,11 @@ def make_dict_tensor(t,p):
 
 # making TF dataset
 
-def getDs():
+def getDs(num):
     model_input_features = {}
     pos_stack = []
     global_stack = []
-    for i in range(1,3):
+    for i in range(1,num+1):
         t, p = getDataFrames(i)
         x, y = make_dict_tensor(t, p)
         global_stack.append(x['particle_type'])
@@ -69,13 +69,13 @@ def getDs():
     return tf.data.Dataset.from_tensor_slices(model_input_features)
 
 
-ds = getDs()
+ds = getDs(3)
 print("pp")
 print(type(ds))
 
-
-
-
+for elem in ds:
+    print(elem)
+    print(type(elem))
 
 
 
