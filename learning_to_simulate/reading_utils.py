@@ -150,15 +150,14 @@ def _read_metadata(data_path):
         return json.loads(fp.read())
 
 
-# data_path = '/private/tmp/datasets/WaterRamps/'
+# data_path = '/private/tmp/datasets/WaterDropSample/'
 # metadata = _read_metadata(data_path)
-# print(metadata)
 #
-# data_path2 = '/private/tmp/datasets/WaterRamps/train.tfrecord'
+# data_path2 = '/private/tmp/datasets/WaterDropSample/train.tfrecord'
 # ds = tf.data.TFRecordDataset(data_path2)
 # ds = ds.map(functools.partial(
 #     parse_serialized_simulation_example, metadata=metadata))
-#
+
 # split_with_window = functools.partial(split_trajectory,
 #                                       window_length=7)
 # ds = ds.flat_map(split_with_window)
