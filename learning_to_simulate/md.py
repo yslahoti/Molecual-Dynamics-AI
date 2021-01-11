@@ -44,7 +44,7 @@ def getDataFrames(i, split):
 
 def make_dict_tensor(t,p):
     t_tensor = tf.convert_to_tensor(t)
-    p_tensor = tf.convert_to_tensor(p)
+    p_tensor = tf.convert_to_tensor(np.asarray(p))
 
     type_dict = {
       "particle_type": t_tensor,
@@ -93,6 +93,7 @@ def getDs1(num):
 #         if ("train" in mode):
 #             s = s.repeat()
 #             s = s.shuffle(512)
+#         ds = batch_concat(ds, batch_size)
 #         return s
 #     elif (mode == "rollout"):
 #         t,p = getDataFrames(1)

@@ -192,12 +192,21 @@ def get_input_fn(data_path, batch_size, mode, split):
 
     def input_fn():
         """Input function for learning simulation."""
+
+        # Defines number of examples in each set
+        if split == 'train':
+            num = 3
+        elif split == 'valid':
+            num = 2
+        else:
+            num = 1
+
         if ("one_step" in mode):
             t,p = md.getDataFrames(1, split)
             x,y = md.make_dict_tensor(t,p)
             s = reading_utils.split_trajectory(x,y)
             print(1)
-            for i in range(2,batch_size+1):
+            for i in range(2,num+1):
                 print(i)
                 t,p = md.getDataFrames(i, split)
                 x,y = md.make_dict_tensor(t,p)
@@ -207,6 +216,7 @@ def get_input_fn(data_path, batch_size, mode, split):
             if ("train" in mode):
                 s = s.repeat()
                 s = s.shuffle(512)
+            s = batch_concat(s, batch_size)
             return s
         elif (mode == "rollout"):
             t,p = md.getDataFrames(1)
