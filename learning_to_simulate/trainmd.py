@@ -182,7 +182,7 @@ def get_input_fn(data_path, batch_size, mode, split):
 
     def input_fn():
         """Input function for learning simulation."""
-        md.getDs2(batch_size, mode)
+        md.getDs2(batch_size, mode, split)
 
     return input_fn
 

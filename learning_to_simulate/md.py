@@ -14,25 +14,28 @@ def normalize(l, nmin, nmax, omin, omax):
     l = (((l - omin) * NewRange) / OldRange) + nmin
     return l
 
-def getDataPlot(i):
+def getDataPlot(i, split):
     u = mda.Universe('../Datasets/solvate.pdb',
-                     '../Datasets/wat' + str(i) + '/wat' + str(i) +'_out.dcd')
+                     '../Datasets/' + split + '/wat' + str(i) +
+                     '/wat' + str(i) +'_out.dcd')
     p = u.atoms.positions
 #Not sure if this is right normalization factor
     p = normalize(p, .2, .8, 0, 30)
     t = u.atoms.types
     return t, p
 
-def getDataFrames(i):
+def getDataFrames(i, split):
     u = mda.Universe('../Datasets/solvate.pdb',
-                     '../Datasets/wat' + str(i) + '/wat' + str(i) +'_out.dcd')
+                     '../Datasets/' + split + '/wat' + str(i) +
+                     '/wat' + str(i) +'_out.dcd')
     t = u.atoms.types
     t[t == "O"] = 0
-    t[t == "H"] = 1
+    t[t == "H"] = 3
     t = np.asarray(t).astype('int32')
 
     l = []
-    with DCDFile('../Datasets/wat' + str(i) + '/wat' + str(i) +'_out.dcd') as f:
+    with DCDFile('../Datasets/' + split + '/wat' + str(i) +
+                 '/wat' + str(i) +'_out.dcd') as f:
         for frame in f:
             ff = frame.xyz
             ff = normalize(ff, .2, .8, 0, 30)
@@ -69,31 +72,31 @@ def getDs1(num):
 
     return tf.data.Dataset.from_tensor_slices(model_input_features)
 
-def getDs2(num, str):
-    if ("one_step" in str):
-        t,p = getDataFrames(1)
+def getDs2(num, mode, split):
+    if ("one_step" in mode):
+        t,p = getDataFrames(1, split)
         x,y = make_dict_tensor(t,p)
         s = reading_utils.split_trajectory(x,y)
         print(1)
         for i in range(2,num+1):
             print(i)
-            t,p = getDataFrames(i)
+            t,p = getDataFrames(i, split)
             x,y = make_dict_tensor(t,p)
             temp = reading_utils.split_trajectory(x,y)
             s = s.concatenate(temp)
         s = s.map(train.prepare_inputs)
-        if ("train" in str):
+        if ("train" in mode):
             s = s.repeat()
             s = s.shuffle(512)
         return s
-    elif (str == "rollout"):
+    elif (mode == "rollout"):
         t,p = getDataFrames(1)
         x,y = make_dict_tensor(t,p)
         print(1)
         s = train.prepare_rollout_inputs(x,y)
         return s
 
-ds = getDs2(3, 'one_step')
+ds = getDs2(3, 'one_step', 'train')
 print(ds)
 
 
