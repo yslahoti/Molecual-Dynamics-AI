@@ -2,9 +2,9 @@ import MDAnalysis as mda
 from MDAnalysis.lib.formats.libdcd import DCDFile
 import tensorflow.compat.v1 as tf
 import numpy as np
-import reading_utils
-import train
+from learning_to_simulate import reading_utils
 import functools
+
 
 tf.enable_eager_execution()
 
@@ -15,8 +15,8 @@ def normalize(l, nmin, nmax, omin, omax):
     return l
 
 def getDataPlot(i, split):
-    u = mda.Universe('../Datasets/solvate.pdb',
-                     '../Datasets/' + split + '/wat' + str(i) +
+    u = mda.Universe('datasets/solvate.pdb',
+                     'datasets/' + split + '/wat' + str(i) +
                      '/wat' + str(i) +'_out.dcd')
     p = u.atoms.positions
 #Not sure if this is right normalization factor
@@ -25,8 +25,8 @@ def getDataPlot(i, split):
     return t, p
 
 def getDataFrames(i, split):
-    u = mda.Universe('../Datasets/solvate.pdb',
-                     '../Datasets/' + split + '/wat' + str(i) +
+    u = mda.Universe('datasets/solvate.pdb',
+                     'datasets/' + split + '/wat' + str(i) +
                      '/wat' + str(i) +'_out.dcd')
     t = u.atoms.types
     t[t == "O"] = 0
@@ -34,7 +34,7 @@ def getDataFrames(i, split):
     t = np.asarray(t).astype('int32')
 
     l = []
-    with DCDFile('../Datasets/' + split + '/wat' + str(i) +
+    with DCDFile('datasets/' + split + '/wat' + str(i) +
                  '/wat' + str(i) +'_out.dcd') as f:
         for frame in f:
             ff = frame.xyz
@@ -48,7 +48,7 @@ def make_dict_tensor(t,p):
 
     type_dict = {
       "particle_type": t_tensor,
-#      "key": tf.convert_to_tensor(num),
+#      "key": tf.convert_to_tensor(0),
     }
     pos_dict = {
       "position": p_tensor
@@ -72,32 +72,34 @@ def getDs1(num):
 
     return tf.data.Dataset.from_tensor_slices(model_input_features)
 
-def getDs2(num, mode, split):
-    if ("one_step" in mode):
-        t,p = getDataFrames(1, split)
-        x,y = make_dict_tensor(t,p)
-        s = reading_utils.split_trajectory(x,y)
-        print(1)
-        for i in range(2,num+1):
-            print(i)
-            t,p = getDataFrames(i, split)
-            x,y = make_dict_tensor(t,p)
-            temp = reading_utils.split_trajectory(x,y)
-            s = s.concatenate(temp)
-        s = s.map(train.prepare_inputs)
-        if ("train" in mode):
-            s = s.repeat()
-            s = s.shuffle(512)
-        return s
-    elif (mode == "rollout"):
-        t,p = getDataFrames(1)
-        x,y = make_dict_tensor(t,p)
-        print(1)
-        s = train.prepare_rollout_inputs(x,y)
-        return s
 
-ds = getDs2(3, 'one_step', 'train')
-print(ds)
+
+
+# #import train
+# def getDs2(num, mode, split):
+#     if ("one_step" in mode):
+#         t,p = getDataFrames(1, split)
+#         x,y = make_dict_tensor(t,p)
+#         s = reading_utils.split_trajectory(x,y)
+#         print(1)
+#         for i in range(2,num+1):
+#             print(i)
+#             t,p = getDataFrames(i, split)
+#             x,y = make_dict_tensor(t,p)
+#             temp = reading_utils.split_trajectory(x,y)
+#             s = s.concatenate(temp)
+#         s = s.map(train
+#                   .prepare_inputs)
+#         if ("train" in mode):
+#             s = s.repeat()
+#             s = s.shuffle(512)
+#         return s
+#     elif (mode == "rollout"):
+#         t,p = getDataFrames(1)
+#         x,y = make_dict_tensor(t,p)
+#         print(1)
+#         s = train.prepare_rollout_inputs(x,y)
+#         return s
 
 
 

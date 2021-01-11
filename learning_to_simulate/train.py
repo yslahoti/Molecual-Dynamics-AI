@@ -41,10 +41,19 @@ from absl import logging
 import numpy as np
 import tensorflow.compat.v1 as tf
 import tree
-
+from learning_to_simulate import md
 from learning_to_simulate import learned_simulator
 from learning_to_simulate import noise_utils
 from learning_to_simulate import reading_utils
+
+
+def del_all_flags(FLAGS):
+    flags_dict = FLAGS._flags()
+    keys_list = [keys for keys in flags_dict]
+    for keys in keys_list:
+        FLAGS.__delattr__(keys)
+
+
 
 flags.DEFINE_enum(
     'mode', 'train', ['train', 'eval', 'eval_rollout'],
@@ -62,6 +71,7 @@ flags.DEFINE_string('output_path', None,
                     help='The path for saving outputs (e.g. rollouts).')
 
 FLAGS = flags.FLAGS
+
 
 Stats = collections.namedtuple('Stats', ['mean', 'std'])
 
@@ -182,35 +192,28 @@ def get_input_fn(data_path, batch_size, mode, split):
 
     def input_fn():
         """Input function for learning simulation."""
-        # Loads the metadata of the dataset.
-        metadata = _read_metadata(data_path)
-        # Create a tf.data.Dataset from the TFRecord.
-        ds = tf.data.TFRecordDataset([os.path.join(data_path, f'{split}.tfrecord')])
-        ds = ds.map(functools.partial(
-            reading_utils.parse_serialized_simulation_example, metadata=metadata))
-        if mode.startswith('one_step'):
-            # Splits an entire trajectory into chunks of 7 steps.
-            # Previous 5 velocities, current velocity and target.
-            split_with_window = functools.partial(
-                reading_utils.split_trajectory,
-                window_length=INPUT_SEQUENCE_LENGTH + 1)
-            ds = ds.flat_map(split_with_window)
-            # Splits a chunk into input steps and target steps
-            ds = ds.map(prepare_inputs)
-            # If in train mode, repeat dataset forever and shuffle.
-            if mode == 'one_step_train':
-                ds = ds.repeat()
-                ds = ds.shuffle(512)
-            # Custom batching on the leading axis.
-            ds = batch_concat(ds, batch_size)
-        elif mode == 'rollout':
-            # Rollout evaluation only available for batch size 1
-            assert batch_size == 1
-            ds = ds.map(prepare_rollout_inputs)
-        else:
-            raise ValueError(f'mode: {mode} not recognized')
-        return ds
-
+        if ("one_step" in mode):
+            t,p = md.getDataFrames(1, split)
+            x,y = md.make_dict_tensor(t,p)
+            s = reading_utils.split_trajectory(x,y)
+            print(1)
+            for i in range(2,batch_size+1):
+                print(i)
+                t,p = md.getDataFrames(i, split)
+                x,y = md.make_dict_tensor(t,p)
+                temp = reading_utils.split_trajectory(x,y)
+                s = s.concatenate(temp)
+            s = s.map(prepare_inputs)
+            if ("train" in mode):
+                s = s.repeat()
+                s = s.shuffle(512)
+            return s
+        elif (mode == "rollout"):
+            t,p = md.getDataFrames(1)
+            x,y = md.make_dict_tensor(t,p)
+            print(1)
+            s = prepare_rollout_inputs(x,y)
+            return s
     return input_fn
 
 
