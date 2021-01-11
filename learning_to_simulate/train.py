@@ -54,7 +54,6 @@ def del_all_flags(FLAGS):
         FLAGS.__delattr__(keys)
 
 
-
 flags.DEFINE_enum(
     'mode', 'train', ['train', 'eval', 'eval_rollout'],
     help='Train model, one step evaluation or rollout evaluation.')
@@ -71,7 +70,6 @@ flags.DEFINE_string('output_path', None,
                     help='The path for saving outputs (e.g. rollouts).')
 
 FLAGS = flags.FLAGS
-
 
 Stats = collections.namedtuple('Stats', ['mean', 'std'])
 
@@ -202,15 +200,15 @@ def get_input_fn(data_path, batch_size, mode, split):
             num = 1
 
         if ("one_step" in mode):
-            t,p = md.getDataFrames(1, split)
-            x,y = md.make_dict_tensor(t,p)
-            s = reading_utils.split_trajectory(x,y)
+            t, p = md.getDataFrames(1, split)
+            x, y = md.make_dict_tensor(t, p)
+            s = reading_utils.split_trajectory(x, y)
             print(1)
-            for i in range(2,num+1):
+            for i in range(2, num + 1):
                 print(i)
-                t,p = md.getDataFrames(i, split)
-                x,y = md.make_dict_tensor(t,p)
-                temp = reading_utils.split_trajectory(x,y)
+                t, p = md.getDataFrames(i, split)
+                x, y = md.make_dict_tensor(t, p)
+                temp = reading_utils.split_trajectory(x, y)
                 s = s.concatenate(temp)
             s = s.map(prepare_inputs)
             if ("train" in mode):
@@ -219,11 +217,12 @@ def get_input_fn(data_path, batch_size, mode, split):
             s = batch_concat(s, batch_size)
             return s
         elif (mode == "rollout"):
-            t,p = md.getDataFrames(1)
-            x,y = md.make_dict_tensor(t,p)
+            t, p = md.getDataFrames(1, split)
+            x, y = md.make_dict_tensor(t, p)
             print(1)
-            s = prepare_rollout_inputs(x,y)
+            s = prepare_rollout_inputs(x, y)
             return s
+
     return input_fn
 
 
@@ -473,7 +472,6 @@ def main(_):
         rollout_iterator = rollout_estimator.predict(
             input_fn=get_input_fn(FLAGS.data_path, batch_size=1,
                                   mode='rollout', split=FLAGS.eval_split))
-
         for example_index, example_rollout in enumerate(rollout_iterator):
             example_rollout['metadata'] = metadata
             filename = f'rollout_{FLAGS.eval_split}_{example_index}.pkl'

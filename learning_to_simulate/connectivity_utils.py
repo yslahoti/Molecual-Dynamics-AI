@@ -99,6 +99,7 @@ def compute_connectivity_for_batch_pyfunc(positions, n_node, radius):
       [positions, n_node, radius], [tf.int32, tf.int32, tf.int32])
   senders.set_shape([None])
   receivers.set_shape([None])
+  n_node = tf.convert_to_tensor(n_node)
   n_edge.set_shape(n_node.get_shape())
   return senders, receivers, n_edge
 
